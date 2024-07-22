@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS Telecom - Acesso Liberado</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; }
+        .container { text-align: center; background: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px; max-width: 400px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Acesso Liberado</h1>
+        <p>Seu acesso à internet foi liberado por <span id="accessTime"></span> horas.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hours = urlParams.get('hours');
+            document.getElementById('accessTime').textContent = hours;
+        });
+    </script>
+</body>
+</html>

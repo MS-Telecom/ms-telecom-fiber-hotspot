@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS Telecom - Hotspot Payment</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; }
+        .container { text-align: center; background: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px; max-width: 400px; width: 100%; }
+        .plans { margin-top: 20px; }
+        .plan { padding: 10px 0; background: #007bff; color: #fff; border-radius: 4px; cursor: pointer; margin-bottom: 10px; }
+        .plan:hover { background: #0056b3; }
+        .qr-code { display: none; margin-top: 20px; }
+        .qr-code img { max-width: 100%; height: auto; }
+        .qr-code .copy-code { margin-top: 10px; cursor: pointer; color: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MS Telecom</h1>
+        <div class="plans">
+            <div class="plan" onclick="selectPlan(0.25, 1.00)">15 Minutos - R$ 1,00</div>
+            <div class="plan" onclick="selectPlan(0.5, 2.00)">30 Minutos - R$ 2,00</div>
+            <div class="plan" onclick="selectPlan(0.75, 3.00)">45 Minutos - R$ 3,00</div>
+            <div class="plan" onclick="selectPlan(1, 4.00)">1 Hora - R$ 4,00</div>
+            <div class="plan" onclick="selectPlan(6, 10.00)">6 Horas - R$ 10,00</div>
+            <div class="plan" onclick="selectPlan(24, 20.00)">24 Horas - R$ 20,00</div>
+        </div>
+        <div class="qr-code" id="qrCode">
+            <h2>Escaneie o QR Code para pagar</h2>
+            <img id="qrImage" src="" alt="QR Code">
+            <p id="copyCode" class="copy-code" onclick="copyPixCode()">Copiar código PIX</p>
+        </div>
+    </div>
+
+    <script>
+        async function selectPlan(hours, amount) {
+            const response = await fetch('/generate-pix', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: amount })
+            });
+            const data = await response.json();
+            document.getElementById('qrImage').src = data.qr_code;
+            document.getElementById('qrCode').style.display = 'block';
+            document.getElementById('copyCode').dataset.pixCode = data.pix_code;
+            checkPayment(data.txid, hours);
+        }
+
+        function copyPixCode() {
+            const pixCode = document.getElementById('copyCode').dataset.pixCode;
+            navigator.clipboard.writeText(pixCode).then(() => {
+                alert('Código PIX copiado!');
+            });
+        }
+
+        function checkPayment(txid, hours) {
+            const interval = setInterval(async () => {
+                const response = await fetch(`/check-payment?txid=${txid}`);
+                const data = await response.json();
+                if (data.access_granted) {
+                    alert('Pagamento confirmado! Acesso liberado por ' + hours + ' horas.');
+                    document.getElementById('qrCode').style.display = 'none';
+                    clearInterval(interval);
+                    grantAccess(hours);
+                }
+            }, 5000);
+        }
+
+        function grantAccess(hours) {
+            // Lógica para liberar acesso ao hotspot
+            // Você pode usar um endpoint no seu backend para comunicar com o Mikrotik
+            fetch(`/grant-access`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mac: getMAC(), hours: hours })
+            });
+        }
+
+        function getMAC() {
+            // Lógica para obter o endereço MAC do usuário
+            // Dependente da implementação específica do Mikrotik
+            return '00:00:00:00:00:00'; // Placeholder
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+internal-error = erro interno ($(error-orig))
+
+config-error = erro de configuração ($(error-orig))
+
+not-logged-in = você não está logado (ip $(ip))
+
+ippool-empty = não é possível atribuir endereço IP - não há mais endereços livres no pool
+
+shutting-down = o serviço MS Connect está sendo desligado
+
+user-session-limit = não há mais sessões permitidas para o usuário $(username)
+
+license-session-limit = limite de sessões alcançado ($(error-orig))
+
+wrong-mac-username = nome de usuário inválido ($(username)): este endereço MAC não é seu
+
+chap-missing = o navegador da web não enviou a resposta do desafio (tente novamente, habilite o JavaScript)
+
+invalid-username = nome de usuário ou senha inválidos
+
+invalid-mac = o usuário $(username) não está autorizado a fazer login a partir deste endereço MAC
+
+uptime-limit = o usuário $(username) atingiu o limite de tempo de atividade
+traffic-limit = o usuário $(username) atingiu o limite de tráfego
+
+radius-timeout = o servidor RADIUS não está respondendo
+
+auth-in-progress = autorização em andamento, tente novamente mais tarde
+
+radius-reply = o servidor Radius retornou uma mensagem de erro personalizada ($(error-orig))
